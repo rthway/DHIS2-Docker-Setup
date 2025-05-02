@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgis/postgis:13-3.1
+    container_name: dhis2_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: dhis_tl
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: dhis2
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  dhis2:
+    image: rthway/dhis2
+    container_name: dhis2_app
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      - DHIS2_HOME=/opt/dhis/config
+    volumes:
+      - dhis2_config:/opt/dhis/config
+
+volumes:
+  pgdata:
+  dhis2_config:
